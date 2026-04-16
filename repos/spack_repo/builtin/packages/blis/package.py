@@ -15,6 +15,8 @@ from spack.package import *
 # from most specific to most generic. The first match wins.
 # When the Spack name matches the BLIS config name, the value is None.
 _targets = {
+    "zen5": None,
+    "zen4": None,
     "zen3": None,
     "zen2": None,
     "zen": None,
