@@ -45,26 +45,6 @@ class Aocc(Package, LlvmDetection, CompilerPackage):
         sha256="966fac2d2c759e9de6e969c10ada7a7b306c113f7f1e07ea376829ec86380daa",
         url="https://download.amd.com/developer/eula/aocc/aocc-5-0/aocc-compiler-5.0.0.tar",
     )
-    version(
-        ver="4.2.0",
-        sha256="ed5a560ec745b24dc0685ccdcbde914843fb2f2dfbfce1ba592de4ffbce1ccab",
-        url="https://download.amd.com/developer/eula/aocc/aocc-4-2/aocc-compiler-4.2.0.tar",
-    )
-    version(
-        ver="4.1.0",
-        sha256="5b04bfdb751c68dfb9470b34235d76efa80a6b662a123c3375b255982cb52acd",
-        url="https://download.amd.com/developer/eula/aocc/aocc-4-1/aocc-compiler-4.1.0.tar",
-    )
-    version(
-        ver="4.0.0",
-        sha256="2729ec524cbc927618e479994330eeb72df5947e90cfcc49434009eee29bf7d4",
-        url="https://download.amd.com/developer/eula/aocc-compiler/aocc-compiler-4.0.0.tar",
-    )
-    version(
-        ver="3.2.0",
-        sha256="8493525b3df77f48ee16f3395a68ad4c42e18233a44b4d9282b25dbb95b113ec",
-        url="https://download.amd.com/developer/eula/aocc-compiler/aocc-compiler-3.2.0.tar",
-    )
 
     provides("c", "cxx")
     provides("fortran")
@@ -121,7 +101,7 @@ class Aocc(Package, LlvmDetection, CompilerPackage):
         # Add path to gcc/g++ such that clang/clang++ can always find a full gcc installation
         # including libstdc++.so and header files.
         if self.spec.satisfies("%gcc") and self.compiler.cxx is not None:
-            compiler_options = "--gcc-toolchain={}".format(self.compiler.prefix)
+            compiler_options = get_gcc_install_dir_flag(self.spec, self.compiler)
             for compiler in ["clang", "clang++"]:
                 with open(join_path(self.prefix.bin, "{}.cfg".format(compiler)), "w") as f:
                     f.write(compiler_options)
@@ -193,3 +173,13 @@ class Aocc(Package, LlvmDetection, CompilerPackage):
             "c": {"99": "-std=c99", "11": "-std=c11"},
         }
         return flags[language][standard]
+
+
+def get_gcc_install_dir_flag(spec, compiler):
+    """Get the --gcc-install-dir=... flag, so that clang does not do a system scan for GCC."""
+    gcc = Executable(compiler.cc)
+    libgcc_path = gcc("-print-file-name=libgcc.a", output=str, fail_on_error=False).strip()
+    if not os.path.isabs(libgcc_path):
+        return None
+    libgcc_dir = os.path.dirname(libgcc_path)
+    return f"--gcc-install-dir={libgcc_dir}" if os.path.exists(libgcc_dir) else None
