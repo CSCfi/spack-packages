@@ -51,6 +51,8 @@ class Gromacs(CMakePackage, CudaPackage):
     # Exception: Otherwise, versions before 2022 will be removed when
     # 2025 is supported.
     version("main", branch="main")
+    version("2026.3", sha256="1094b7bbc6a3960223827114626657110b40096cdf9598a727935fc84ebf8aa0")
+    version("2026.2", sha256="d27e4455e8246177952366798631a0dad9f2e1f567400a6cb854a168dcc050dd")
     version("2026.1", sha256="d95a313f56db7e05ee3a21e50f582fdee5176c2f60b900bab2461fd95c5e81be")
     version("2026.0", sha256="229726f436cc515bfd8c4aa7af3a97b18072f71b5ebd0b08daf6565571e2d9eb")
     version("2025.4", sha256="ca17720b4a260eb73649211e9f6a940ee7543452129844213c3accb0a927a5c3")
