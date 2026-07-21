@@ -10,12 +10,13 @@ from spack.package import *
 class PyPybigwig(PythonPackage):
     """A package for accessing bigWig files using libBigWig."""
 
-    pypi = "pyBigWig/pyBigWig-0.3.4.tar.gz"
+    homepage = "https://github.com/deeptools/pyBigWig"
+    git = "https://github.com/deeptools/pyBigWig.git"
 
+    version("0.3.25", tag="0.3.25", commit="9c7d9d90331d821a3a4a48214e4bf9f3be6e5274")
+    version("0.3.22", tag="0.3.22", commit="fb7c0cf889407f55a6c31eeb6fd5f6a0744ee70c")
+    
     license("MIT")
-
-    version("0.3.12", sha256="e01991790ece496bf6d3f00778dcfb136dd9ca0fd28acc1b3fb43051ad9b8403")
-    version("0.3.4", sha256="8c97a19218023190041c0e426f1544f7a4944a7bb4568faca1d85f1975af9ee2")
 
     variant("numpy", default=True, description="Enable support for numpy integers and vectors")
 
