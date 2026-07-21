@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 
 from spack.package import *
@@ -50,15 +49,26 @@ class IqTree(CMakePackage):
     depends_on("cxx", type="build")  # generated
 
     # Depends on Eigen3 and zlib
-
     depends_on("boost+container+math+exception")
-    depends_on("eigen")
+    depends_on("eigen@3")
     depends_on("zlib-api")
+
     depends_on("mpi", when="+mpi")
 
     def cmake_args(self):
         spec = self.spec
+
         args = []
+
+        # IQ-TREE's CMakeLists.txt runs a bare `find_package(Eigen3)` before it
+        # extends CMAKE_MODULE_PATH, so it relies solely on Eigen3Config.cmake
+        # being discovered in config mode. Under Spack this is unreliable and
+        # fails with "Eigen3 library not found". The CMake logic is guarded by
+        # `if (NOT EIGEN3_INCLUDE_DIR)`, so setting EIGEN3_INCLUDE_DIR directly
+        # skips the fragile find_package call and points the build straight at
+        # the headers (Spack installs Eigen headers under <prefix>/include/eigen3).
+        args.append(self.define("EIGEN3_INCLUDE_DIR", spec["eigen"].prefix.include.eigen3))
+
         iqflags = []
 
         if spec.satisfies("+lsd2"):
