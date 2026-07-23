@@ -34,6 +34,8 @@ class Spades(CMakePackage):
     depends_on("zlib-api")
     depends_on("bzip2")
 
+    depends_on("mpi", when="+tools")
+    
     variant("sra", default=True, description="Build with ncbi sra file support", when="@4:")
     variant("tools", default=True, description="Build additional tools", when="@4:")
 
