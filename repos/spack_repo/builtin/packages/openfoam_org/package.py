@@ -68,6 +68,8 @@ class OpenfoamOrg(Package):
     license("GPL-3.0-or-later")
 
     version("develop", branch="master")
+    version("14", sha256="f9eaa89b1f1986ff8b7ce04cf5aaf11ceeeb05bd0c4e4fc3d4bfd199d56f82e9")
+    version("13", sha256="9969d7f09411d72450855f855f2f37760ff147e3f137fd7063ce6bc26d629632")
     version("12", sha256="e59fad54c62e64f1bb89dbaebe5f99a76dc0a6a91d9aad86042a7c4cef6d0744")
     version("11", sha256="ebc0f86ead699abba61290ba8aac5b730aa93256e675d1d93a5d5f116d51e0c0")
     version("10", sha256="59d712ba798ca44b989b6ac50bcb7c534eeccb82bcf961e10ec19fc8d84000cf")
@@ -289,11 +291,16 @@ class OpenfoamOrg(Package):
             "WM_THIRD_PARTY_DIR": r"$WM_PROJECT_DIR/ThirdParty #SPACK: No separate third-party",
             "WM_VERSION": str(self.version),
             "FOAMY_HEX_MESH": "",
-            # Explicitly disable ThirdParty library lookups
-            "SCOTCH_TYPE": "none",
-            "METIS_TYPE": "none",
+            # Explicitly disable ThirdParty library lookups, but never set
+            # "none" for enabled components: since openfoam-org@12 the
+            # src/parallel/decompose/{scotch,ptscotch,metis,zoltan}/Allwmake
+            # scripts skip building the decomposition library entirely when
+            # its *_TYPE is "none". Use "system" instead; the spack-written
+            # etc/config.sh/<component> supplies the actual paths.
+            "SCOTCH_TYPE": "system" if "+scotch" in self.spec else "none",
+            "METIS_TYPE": "system" if "+metis" in self.spec else "none",
             "PARMETIS_TYPE": "none",
-            "ZOLTAN_TYPE": "none",
+            "ZOLTAN_TYPE": "system" if "+zoltan" in self.spec else "none",
         }
 
         rewrite_environ_files(
