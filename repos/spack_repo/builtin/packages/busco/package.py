@@ -46,6 +46,8 @@ class Busco(PythonPackage):
     depends_on("augustus")
     depends_on("py-biopython", when="@4.1.3:", type=("build", "run"))
     depends_on("py-pandas", when="@5:", type="run")
+    # run_BUSCO.py uses requests to upload run stats (undeclared upstream dep)
+    depends_on("py-requests", when="@5.7.0:", type="run")
     depends_on("bbmap", when="@5:", type="run")
     depends_on("prodigal", when="@5:", type="run")
     depends_on("metaeuk", when="@5:", type="run")
