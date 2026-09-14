@@ -16,6 +16,7 @@ class Fastp(MakefilePackage):
 
     license("MIT")
 
+    version("1.3.6", sha256="4a282e9bbcbce849cd4ed3527e59469ad2cf7cf8d3cbe99debabaca985030946")
     version("1.0.1", sha256="80464cca840f7ecaeec63528cc5c4b138af83da909f91291115e1811e5f8cec6")
     version("0.23.4", sha256="4fad6db156e769d46071add8a778a13a5cb5186bc1e1a5f9b1ffd499d84d72b5")
     version("0.23.3", sha256="a37ee4b5dcf836a5a19baec645657b71d9dcd69ee843998f41f921e9b67350e3")
@@ -25,6 +26,7 @@ class Fastp(MakefilePackage):
 
     depends_on("libisal", type=("build", "link"), when="@0.23:")
     depends_on("libdeflate", type=("build", "link"), when="@0.23:")
+    depends_on("highway", type=("build", "link"), when="@1.2:")
 
     def install(self, spec, prefix):
         mkdirp(prefix.bin)
