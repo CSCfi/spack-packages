@@ -20,6 +20,10 @@ class Freebayes(MesonPackage):
     version("1.3.6", sha256="6016c1e58fdf34a1f6f77b720dd8e12e13a127f7cbac9c747e47954561b437f5")
     version("1.3.5", sha256="7e2635690e916ed85cec36b3263e6e5357413a4f2bf3035362d9749335e8a696")
 
+    # bundled multichoose reads a[-1] on the last combination; aborts under
+    # _GLIBCXX_ASSERTIONS. freebayes#786, fixed in vcflib/multichoose@255192e
+    patch("multichoose-bounds.patch", when="@:1.3.6")
+
     depends_on("c", type="build")  # generated
     depends_on("cxx", type="build")  # generated
 
