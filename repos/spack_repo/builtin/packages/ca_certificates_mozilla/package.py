@@ -16,9 +16,15 @@ class CaCertificatesMozilla(Package):
     maintainers("haampie")
 
     version(
+        "2026-10-20",
+        sha256="796f1389bfea13c0ed78f663b765baaff54a508e5483786bd6ece73c5e3e3cbe",
+        expand=False,
+    )
+    version(
         "2025-08-12",
         sha256="64dfd5b1026700e0a0a324964749da9adc69ae5e51e899bf16ff47d6fd0e9a5e",
         expand=False,
+        deprecated=True,
     )
 
     def url_for_version(self, version):

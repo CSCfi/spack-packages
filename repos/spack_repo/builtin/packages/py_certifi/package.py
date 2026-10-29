@@ -17,9 +17,21 @@ class PyCertifi(PythonPackage):
 
     license("MPL-2.0")
 
-    version("2026.1.4", sha256="ac726dd470482006e014ad384921ed6438c457018f4b3d204aea4281258b2120")
-    version("2025.7.14", sha256="8ea99dbdfaaf2ba2f9bac77b9249ef62ec5218e7c2b2e903378ed5fccf765995")
-    version("2025.4.26", sha256="0a816057ea3cdefcef70270d2c515e4506bbc954f417fa5ade2021213bb8f0c6")
+    version(
+        "2026.10.19", sha256="035c1e85572b141bf1c3a3eff0e33a8eb74917522f2559075ff8d2fea780a1ae"
+    )
+    # older versions include emSign intermediate certificates with exposed private keys
+    # https://github.com/astral-sh/uv/security/advisories/GHSA-hq85-5cpj-mr62
+    with default_args(deprecated=True):
+        version(
+            "2026.1.4", sha256="ac726dd470482006e014ad384921ed6438c457018f4b3d204aea4281258b2120"
+        )
+        version(
+            "2025.7.14", sha256="8ea99dbdfaaf2ba2f9bac77b9249ef62ec5218e7c2b2e903378ed5fccf765995"
+        )
+        version(
+            "2025.4.26", sha256="0a816057ea3cdefcef70270d2c515e4506bbc954f417fa5ade2021213bb8f0c6"
+        )
 
     with default_args(type="build"):
         depends_on("py-setuptools@42:")
