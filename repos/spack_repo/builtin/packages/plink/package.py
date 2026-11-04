@@ -15,6 +15,7 @@ class Plink(Package):
     homepage = "https://www.cog-genomics.org/plink/1.9/"
     git = "https://github.com/chrchang/plink-ng.git"
 
+    version("1.9.0", commit="665f8a68ffe9f7870c5b1888b2bed44304325aa7")
     version("1.9-beta7.7", commit="8bf44299e6eed58f3ebd27f7e28cead11b814785")
     version("1.9-beta6.27", commit="a2ea957c893fbb0558358edef27f3ecbf3d360f8")
     version(
@@ -25,13 +26,15 @@ class Plink(Package):
     )
 
     with when("@1.9-beta-6.27:"):
+        depends_on("c", type="build")
+        depends_on("cxx", type="build")
         depends_on("zlib-api", when="@1.9-beta6.27:")
         depends_on("blas", when="@1.9-beta6.27:")
         depends_on("lapack", when="@1.9-beta6.27:")
     depends_on("gmake", type="build")
 
     patch("dynamic_zlib.patch", when="@1.9-beta6.27:1.9-beta6.99")
-    patch("dynamic_zlib-1.3.patch", when="@1.9-beta7.7:")
+    patch("dynamic_zlib-1.3.patch", when="@1.9-beta7.7:1.9-beta7.99")
 
     def install(self, spec, prefix):
         mkdirp(prefix.bin)
@@ -45,6 +48,10 @@ class Plink(Package):
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         env.set("BLASFLAGS", self.spec["blas"].libs.ld_flags)
         env.set("ZLIB", self.spec["zlib-api"].libs.ld_flags)
+        # 1.9.0 guards every zlib include with DYNAMIC_ZLIB, so no patch is needed;
+        # CXEXTRA defaults to -DSTABLE_BUILD, so keep that
+        if self.spec.satisfies("@1.9.0:"):
+            env.set("CXEXTRA", "-DSTABLE_BUILD -DDYNAMIC_ZLIB")
 
     @when("@1.9-beta6.27:")
     def install(self, spec, prefix):
