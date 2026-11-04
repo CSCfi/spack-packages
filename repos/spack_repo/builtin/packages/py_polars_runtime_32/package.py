@@ -36,6 +36,11 @@ class PyPolarsRuntime32(PythonPackage):
     # see py-polars for how to build rust@nightly
     depends_on("rust@nightly", type="build", when="+nightly")
 
+    # spack's url parser reads "32-1.34.0" as the version and drops the "32"
+    def url_for_version(self, version):
+        url = "https://files.pythonhosted.org/packages/source/p/polars-runtime-32"
+        return f"{url}/polars_runtime_32-{version}.tar.gz"
+
     @when("~nightly")
     def setup_build_environment(self, env):
         # https://github.com/pola-rs/polars/issues/22708#issuecomment-2872555300
