@@ -26,6 +26,11 @@ class Trinity(MakefilePackage):
     license("BSD-3-Clause")
 
     version(
+        "2.15.2.FULL",
+        sha256="baab87e4878ad097e265c46de121414629bf88fa9342022baae5cac12432a15c",
+        url="https://github.com/trinityrnaseq/trinityrnaseq/releases/download/Trinity-v2.15.2/trinityrnaseq-v2.15.2.FULL.tar.gz",
+    )
+    version(
         "2.15.1.FULL",
         sha256="ba37e5f696d3d54e8749c4ba439901a3e97e14a4314a5229d7a069ad7b1ee580",
         url="https://github.com/trinityrnaseq/trinityrnaseq/releases/download/Trinity-v2.15.1/trinityrnaseq-v2.15.1.FULL.tar.gz",
@@ -54,11 +59,13 @@ class Trinity(MakefilePackage):
     depends_on("java@8:", type=("build", "run"))
     depends_on("bowtie2")
     depends_on("jellyfish")
-    depends_on("salmon")
+    depends_on("salmon@:1.10.3")
     depends_on("perl+threads", type=("build", "run"))
     depends_on("autoconf", type="build")
     depends_on("automake", type="build")
     depends_on("libtool", type="build")
+    # bamsifter links to this from 2.15.2, see edit()
+    depends_on("htslib", when="@2.15.2:")
 
     # There is no documented list of these deps, but they're in the Dockerfile
     #  and we have runtime errors without them
@@ -99,6 +106,18 @@ class Trinity(MakefilePackage):
     depends_on("r-sm", type="run")
 
     patch("2.15.1.patch", when="@2.15.1.FULL")
+
+    def edit(self, spec, prefix):
+        if spec.satisfies("@2.15.2:"):
+            # 2.15.1 shipped bamsifter's htslib prebuilt; 2.15.2 ships it as a bare git
+            # checkout that only builds from a git clone with autoconf 2.69. Skip building
+            # it, so bamsifter compiles against spack's htslib through the compiler wrapper
+            filter_file(
+                "sift_bam_max_cov.cpp htslib/version.h",
+                "sift_bam_max_cov.cpp",
+                "trinity-plugins/bamsifter/Makefile",
+                string=True,
+            )
 
     def build(self, spec, prefix):
         make()
