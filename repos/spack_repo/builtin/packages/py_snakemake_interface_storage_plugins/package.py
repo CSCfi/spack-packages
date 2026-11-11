@@ -18,6 +18,8 @@ class PySnakemakeInterfaceStoragePlugins(PythonPackage):
 
     license("MIT")
 
+    version("4.4.1", sha256="b2b5bf05318af36955ebf2ce76c921c0fb06904ca98fb30e1657d88b7b7b6945")
+    version("4.3.2", sha256="2f45c6b784e2af5b6e7102d3cb700d597b7cf7515fcf02d7d1153065e90a7895")
     version("4.2.3", sha256="95be93d1aa1c56c189d9ff661930a6475e847a79a74013822c9570c0ef691755")
     version("4.1.0", sha256="9f1466b68abda3b4e602133318973d02c15404709d24eaeb02f23e713691aaf0")
     version("4.0.1", sha256="6703b6effb68b86d9f9fe95497efdb3139473e63a523084a27bb7bfefe379cbd")
@@ -29,11 +31,13 @@ class PySnakemakeInterfaceStoragePlugins(PythonPackage):
 
     depends_on("py-wrapt@1.15:", when="@4.2:", type=("build", "run"))
     depends_on("py-wrapt@1.15:1", when="@:4.1", type=("build", "run"))
-    depends_on("py-reretry@0.11.8:", when="@4.2:", type=("build", "run"))
+    depends_on("py-reretry@0.11.8:", when="@4.2:4.3", type=("build", "run"))
     depends_on("py-reretry@0.11.8:0.11", when="@:4.1", type=("build", "run"))
+    depends_on("py-tenacity@9.1.4:9", when="@4.4:", type=("build", "run"))
     depends_on("py-throttler@1.2.2:", when="@4.2:", type=("build", "run"))
     depends_on("py-throttler@1.2.2:1", when="@:4.1", type=("build", "run"))
     depends_on("py-humanfriendly@10:", type=("build", "run"), when="@3.6:4.1")
+    depends_on("py-humanfriendly@10", type=("build", "run"), when="@4.3.3:")
 
     depends_on("py-snakemake-interface-common@1.12:", when="@4.2:", type=("build", "run"))
     depends_on("py-snakemake-interface-common@1.12:1", when="@:4.1", type=("build", "run"))
