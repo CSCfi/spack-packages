@@ -22,8 +22,10 @@ class Nvshmem(MakefilePackage, CMakePackage, CudaPackage):
 
     maintainers("bvanessen")
 
-    license("BSD-3-Clause-Open-MPI")
+    license("BSD-3-Clause-Open-MPI", when="@:3.4")
+    license("Apache-2.0", when="@3.7:")
 
+    version("3.7.2", sha256="214d46e94232729c8acd11d11ad2050ee86011e7757c40c680ca3ddc2f9e88d8")
     version("3.4.5", sha256="40c1d4c255dd7395e04df41b181c4afdf2e0724c06b6fabde58bf2f8f532b0e5")
     version("3.3.24", sha256="3210e6ed0f010991af3c9f31266b4149a15bc1d560f98951c234f25e2076507e")
     version("3.3.20", sha256="96ec9620e82ec90de92c7d61a7ba03c0eba05075bf10e1fc4a066d45e7f7d21f")
@@ -64,6 +66,9 @@ class Nvshmem(MakefilePackage, CMakePackage, CudaPackage):
     def url_for_version(self, version):
         ver_str = "{0}".format(version)
         directory = ver_str.split("-")[0]
+        if version >= Version("3.5"):
+            # 3.5+ sources are only published on GitHub (tags are v<version>-0)
+            return f"https://github.com/NVIDIA/nvshmem/archive/refs/tags/v{version}-0.tar.gz"
         if version < Version("3.3.9"):
             url_fmt = "https://developer.download.nvidia.com/compute/redist/nvshmem/{0}/source/nvshmem_src_{1}.txz"
         else:
